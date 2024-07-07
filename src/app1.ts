@@ -57,7 +57,7 @@ import dataSource from "./db/data-source.db";
 import employeeRouter from "./routes/employee.routes";
 import HttpException from "./exceptions/http.exceptions";
 import errorMiddleware from "./middleware/error.middleware";
-
+// import dotenv from "dotenv";
 
 // const { Client } = new Client
 

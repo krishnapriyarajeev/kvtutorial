@@ -1,11 +1,41 @@
 import Address from "../entity/address.entity";
 import Employee from "../entity/employee.entity";
+import HttpException from "../exceptions/http.exceptions";
 import EmployeeRepository from "../repository/employee.repository";
+import { JWT_SECRET, JWT_VALIDITY } from "../utils/constants";
+import { Role } from "../utils/role.enum";
+import bcrypt from "bcrypt";
+import jsonwebtoken from "jsonwebtoken";
+import {jwtPayload} from "../utils/jwtPayload";
 
 class EmployeeService{
     // private employeeRepository: EmployeeRepository;
     constructor(private employeeRepository: EmployeeRepository){
         
+    }
+
+    async loginEmployee(email: string, password: string){
+        const employee = await this.employeeRepository.findOneBy({email});
+
+        if(!employee){
+            throw new HttpException(401, "EMPLOYEE NOT FOUND");
+        }
+
+        const result = await bcrypt.compare(password, employee.password);
+
+        if(!result){
+            throw new HttpException(401, "INVALID CREDENTIALS")
+        }
+
+        const payload: jwtPayload = {
+            name: employee.name,
+            email: employee.email,
+            role: employee.role
+        };
+
+        const token= jsonwebtoken.sign(payload, JWT_SECRET,{ expiresIn: JWT_VALIDITY});
+        return {token};
+
     }
 
     async getAllEmployees(){
@@ -15,11 +45,13 @@ class EmployeeService{
         return this.employeeRepository.findOneBy({id});
     }
 
-    async CreateEmployee(email: string, name: string, age: number, address: any){
+    async CreateEmployee(email: string, name: string, age: number, address: any, password: string, role: Role){
         const newEmployee = new Employee();
         newEmployee.email = email;
         newEmployee.name = name;
         newEmployee.age=age;
+        newEmployee.password = password ? await bcrypt.hash(password, 10): "";
+        newEmployee.role = role;
         
         const newAddress = new Address();
         newAddress.line1 = address.line1;
@@ -30,11 +62,13 @@ class EmployeeService{
         return this.employeeRepository.save(newEmployee);
     }
 
-    async UpdateEmployee(id: number, name:string, email: string, age: number, address: any){
+    async UpdateEmployee(id: number, name:string, email: string, age: number, address: any, password: string, role: Role){
         const employee = await this.employeeRepository.findOneBy({id});
         employee.name = name;
         employee.email = email;
         employee.age=age;
+        employee.password=password;
+        employee.role=role;
         
         const newAddress = new Address();
         newAddress.line1 = address.line1;
