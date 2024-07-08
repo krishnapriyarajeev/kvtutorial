@@ -8,10 +8,15 @@ import bcrypt from "bcrypt";
 import jsonwebtoken from "jsonwebtoken";
 import { jwtPayload } from "../utils/jwtPayload";
 import Department from "../entity/department.entity";
+import DepartmentService from "./department.service";
+import DepartmentRepository from "../repository/department.repository";
 
 class EmployeeService {
   // private employeeRepository: EmployeeRepository;
-  constructor(private employeeRepository: EmployeeRepository) {}
+  constructor(
+    private employeeRepository: EmployeeRepository,
+    private departmentService: DepartmentService
+  ) {}
 
   async loginEmployee(email: string, password: string) {
     const employee = await this.employeeRepository.findOneBy({ email });
@@ -41,6 +46,7 @@ class EmployeeService {
   async getAllEmployees() {
     return this.employeeRepository.find();
   }
+
   async getEmployeeById(id: number) {
     return this.employeeRepository.findOneBy({ id });
   }
@@ -52,7 +58,7 @@ class EmployeeService {
     address: any,
     password: string,
     role: Role,
-    deptId: number
+    id: number
   ) {
     const newEmployee = new Employee();
     newEmployee.email = email;
@@ -61,9 +67,21 @@ class EmployeeService {
     newEmployee.password = password ? await bcrypt.hash(password, 10) : "";
     newEmployee.role = role;
 
-    // const department = new Department()
-    // department.id = ""
-    newEmployee.department_id = deptId;
+    newEmployee.department_id = id;
+
+    // const department= new DepartmentService(new DepartmentRepository.findOneBy({ id }))
+
+    // if (department) {
+    //   throw new HttpException(404, "Department does not exist.");
+    // }
+    // const departmentService = DepartmentService()
+
+    const dept = await this.departmentService.getDepartmentById(id)
+    console.log(dept);
+    
+    if (!dept) {
+      throw new HttpException(404,"Department does not exist")
+    }
 
     const newAddress = new Address();
     newAddress.line1 = address.line1;
@@ -95,6 +113,13 @@ class EmployeeService {
 
     employee.address.line1 = address.line1;
     employee.address.pincode = address.pincode;
+
+    const dept = await this.departmentService.getDepartmentById(id)
+    console.log(dept);
+    
+    if (!dept) {
+      throw new HttpException(404,"Department does not exist")
+    }
 
     return this.employeeRepository.save(employee);
   }

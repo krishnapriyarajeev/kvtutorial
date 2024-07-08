@@ -29,7 +29,7 @@ class EmployeeController {
   public loginEmployee = async (
     req: express.Request,
     res: express.Response,
-    next: NewableFunction
+    next: NextFunction
   ) => {
     const { email, password } = req.body;
     try {
@@ -46,9 +46,13 @@ class EmployeeController {
     next: NextFunction
   ) => {
     const role = req.role;
-      if( role !==Role.HR){ // if()
-        throw new HttpException(403, "You are not authorized to view all employees");
-      }
+    if (role !== Role.HR) {
+      // if()
+      throw new HttpException(
+        403,
+        "You are not authorized to view all employees"
+      );
+    }
 
     const employees = await this.employeeService.getAllEmployees();
     console.log(req.role);
@@ -85,8 +89,11 @@ class EmployeeController {
   ) => {
     try {
       const role = req.role;
-      if( role !==Role.HR){ 
-        throw new HttpException(403, "You are not authorized to create employee");
+      if (role !== Role.HR) {
+        throw new HttpException(
+          403,
+          "You are not authorized to create employee"
+        );
       }
 
       const employeeData = plainToInstance(CreateEmployeeDto, req.body);
@@ -118,10 +125,13 @@ class EmployeeController {
     next: express.NextFunction
   ) => {
     try {
-
       const role = req.role;
-      if( role !==Role.HR){ // if()
-        throw new HttpException(403, "You are not authorized to update employee");
+      if (role !== Role.HR) {
+        // if()
+        throw new HttpException(
+          403,
+          "You are not authorized to update employee"
+        );
       }
 
       const employeeData = plainToInstance(UpdateEmployeeDto, req.body);
@@ -155,8 +165,12 @@ class EmployeeController {
   ) => {
     try {
       const role = req.role;
-      if( role !==Role.HR){ // if()
-        throw new HttpException(403, "You are not authorized to remove employee");
+      if (role !== Role.HR) {
+        // if()
+        throw new HttpException(
+          403,
+          "You are not authorized to remove employee"
+        );
       }
 
       const employeeId = Number(req.params.id);
