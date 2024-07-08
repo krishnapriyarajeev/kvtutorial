@@ -6,90 +6,103 @@ import { JWT_SECRET, JWT_VALIDITY } from "../utils/constants";
 import { Role } from "../utils/role.enum";
 import bcrypt from "bcrypt";
 import jsonwebtoken from "jsonwebtoken";
-import {jwtPayload} from "../utils/jwtPayload";
+import { jwtPayload } from "../utils/jwtPayload";
 import Department from "../entity/department.entity";
 
-class EmployeeService{
-    // private employeeRepository: EmployeeRepository;
-    constructor(private employeeRepository: EmployeeRepository){
-        
+class EmployeeService {
+  // private employeeRepository: EmployeeRepository;
+  constructor(private employeeRepository: EmployeeRepository) {}
+
+  async loginEmployee(email: string, password: string) {
+    const employee = await this.employeeRepository.findOneBy({ email });
+
+    if (!employee) {
+      throw new HttpException(401, "EMPLOYEE NOT FOUND");
     }
 
-    async loginEmployee(email: string, password: string){
-        const employee = await this.employeeRepository.findOneBy({email});
+    const result = await bcrypt.compare(password, employee.password);
 
-        if(!employee){
-            throw new HttpException(401, "EMPLOYEE NOT FOUND");
-        }
-
-        const result = await bcrypt.compare(password, employee.password);
-
-        if(!result){
-            throw new HttpException(401, "INVALID CREDENTIALS")
-        }
-
-        const payload: jwtPayload = {
-            name: employee.name,
-            email: employee.email,
-            role: employee.role
-        };
-
-        const token= jsonwebtoken.sign(payload, JWT_SECRET,{ expiresIn: JWT_VALIDITY});
-        return {token};
-
+    if (!result) {
+      throw new HttpException(401, "INVALID CREDENTIALS");
     }
 
-    async getAllEmployees(){
-        return this.employeeRepository.find();
-    }
-    async getEmployeeById(id: number){
-        return this.employeeRepository.findOneBy({id});
-    }
+    const payload: jwtPayload = {
+      name: employee.name,
+      email: employee.email,
+      role: employee.role,
+    };
 
-    async CreateEmployee(email: string, name: string, age: number, address: any, password: string, role: Role, deptId: number){
-        const newEmployee = new Employee();
-        newEmployee.email = email;
-        newEmployee.name = name;
-        newEmployee.age=age;
-        newEmployee.password = password ? await bcrypt.hash(password, 10): "";
-        newEmployee.role = role;
+    const token = jsonwebtoken.sign(payload, JWT_SECRET, {
+      expiresIn: JWT_VALIDITY,
+    });
+    return { token };
+  }
 
-        // const department = new Department()
-        // department.id = ""
-        newEmployee.department_id = deptId;
-        
-        const newAddress = new Address();
-        newAddress.line1 = address.line1;
-        newAddress.pincode = address.pincode;
+  async getAllEmployees() {
+    return this.employeeRepository.find();
+  }
+  async getEmployeeById(id: number) {
+    return this.employeeRepository.findOneBy({ id });
+  }
 
-        newEmployee.address = newAddress;
+  async CreateEmployee(
+    email: string,
+    name: string,
+    age: number,
+    address: any,
+    password: string,
+    role: Role,
+    deptId: number
+  ) {
+    const newEmployee = new Employee();
+    newEmployee.email = email;
+    newEmployee.name = name;
+    newEmployee.age = age;
+    newEmployee.password = password ? await bcrypt.hash(password, 10) : "";
+    newEmployee.role = role;
 
-        return this.employeeRepository.save(newEmployee);
-    }
+    // const department = new Department()
+    // department.id = ""
+    newEmployee.department_id = deptId;
 
-    async UpdateEmployee(id: number, name:string, email: string, age: number, address: any, password: string, role: Role, deptId: number){
-        const employee = await this.employeeRepository.findOneBy({id});
+    const newAddress = new Address();
+    newAddress.line1 = address.line1;
+    newAddress.pincode = address.pincode;
 
-        employee.name = name;
-        employee.email = email;
-        employee.age=age;
-        employee.password=password;
-        employee.role=role;
-        employee.department_id=deptId;
-        
-        const newAddress = new Address();
-        newAddress.line1 = address.line1;
-        newAddress.pincode = address.pincode;
+    newEmployee.address = newAddress;
 
-        employee.address = newAddress;
-        return this.employeeRepository.save(employee);
-    }
+    return this.employeeRepository.save(newEmployee);
+  }
 
-    async RemoveEmployee(id: number) {
-        const employee = await this.employeeRepository.findOneBy({id});
-        return this.employeeRepository.softRemove(employee);
-    }
+  async UpdateEmployee(
+    id: number,
+    name: string,
+    email: string,
+    age: number,
+    address: any,
+    password: string,
+    role: Role,
+    deptId: number
+  ) {
+    const employee = await this.employeeRepository.findOneBy({ id });
 
+    employee.name = name;
+    employee.email = email;
+    employee.age = age;
+    employee.password = password;
+    employee.role = role;
+    employee.department_id = deptId;
+
+    employee.address.line1 = address.line1;
+    employee.address.pincode = address.pincode;
+
+    return this.employeeRepository.save(employee);
+  }
+
+  async RemoveEmployee(id: number) {
+    const employee = await this.employeeRepository.findOneBy({ id });
+    return this.employeeRepository.softRemove(employee);
+  }
 }
 
-export default EmployeeService; 
+export default EmployeeService;

@@ -10,7 +10,6 @@ import { RequestWithUser } from "../utils/requestWithUser";
 import { Role } from "../utils/role.enum";
 
 class EmployeeController {
-  // private employeeService: EmployeeService;
   public router: express.Router;
 
   constructor(private employeeService: EmployeeService) {
@@ -18,19 +17,14 @@ class EmployeeController {
 
     this.router.post("/login", this.loginEmployee);
 
-    this.router.get("/", this.getAllEmployees);
-    this.router.get("/:id", this.getEmployeesById);
+    this.router.get("/", authorize, this.getAllEmployees);
+    this.router.get("/:id", authorize, this.getEmployeesById);
 
-    this.router.post("/", this.CreateEmployee);
+    this.router.post("/", authorize, this.CreateEmployee);
 
-    this.router.put("/:id", this.UpdateEmployee);
-    this.router.delete("/:id", this.RemoveEmployee);
+    this.router.put("/:id", authorize, this.UpdateEmployee);
+    this.router.delete("/:id", authorize, this.RemoveEmployee);
   }
-
-  // public async getAllEmployees(req: express.Request, res: express.Response){
-  //     const employees = await this.employeeService.getAllEmployees();
-  //     res.status(200).send(employees);
-  // }
 
   public loginEmployee = async (
     req: express.Request,
@@ -51,6 +45,11 @@ class EmployeeController {
     res: express.Response,
     next: NextFunction
   ) => {
+    const role = req.role;
+      if( role !==Role.HR){ // if()
+        throw new HttpException(403, "You are not authorized to view all employees");
+      }
+
     const employees = await this.employeeService.getAllEmployees();
     console.log(req.role);
     res.status(200).send(employees);
@@ -85,15 +84,13 @@ class EmployeeController {
     next: express.NextFunction
   ) => {
     try {
-
-      // const role = req.role;
-      // if( role !==Role.HR){ // if()
-      //   throw new HttpException(403, "You are not authorized to create employee");
-      // }
+      const role = req.role;
+      if( role !==Role.HR){ 
+        throw new HttpException(403, "You are not authorized to create employee");
+      }
 
       const employeeData = plainToInstance(CreateEmployeeDto, req.body);
       const errors = await validate(employeeData);
-
 
       if (errors.length) {
         console.log(JSON.stringify(errors));
@@ -116,11 +113,17 @@ class EmployeeController {
     }
   };
   public UpdateEmployee = async (
-    req: express.Request,
+    req: RequestWithUser,
     res: express.Response,
     next: express.NextFunction
   ) => {
     try {
+
+      const role = req.role;
+      if( role !==Role.HR){ // if()
+        throw new HttpException(403, "You are not authorized to update employee");
+      }
+
       const employeeData = plainToInstance(UpdateEmployeeDto, req.body);
       const errors = await validate(employeeData);
       const employeeId = Number(req.params.id);
@@ -146,11 +149,16 @@ class EmployeeController {
   };
 
   public RemoveEmployee = async (
-    req: express.Request,
+    req: RequestWithUser,
     res: express.Response,
     next: express.NextFunction
   ) => {
     try {
+      const role = req.role;
+      if( role !==Role.HR){ // if()
+        throw new HttpException(403, "You are not authorized to remove employee");
+      }
+
       const employeeId = Number(req.params.id);
 
       const employees = await this.employeeService.getEmployeeById(employeeId);

@@ -7,34 +7,40 @@ import authorize from "../middleware/authorize.middleware";
 import { RequestWithUser } from "../utils/requestWithUser";
 import { Role } from "../utils/role.enum";
 import DepartmentService from "../service/department.service";
-import { CreateDepartmentDto, UpdateDepartmentDto } from "../dto/department.dto";
+import {
+  CreateDepartmentDto,
+  UpdateDepartmentDto,
+} from "../dto/department.dto";
+
 
 class DepartmentController {
-  // private employeeService: EmployeeService;
   public router: express.Router;
 
   constructor(private departmentService: DepartmentService) {
     this.router = express.Router();
 
-    this.router.get("/", this.getAllDepartment);
-    this.router.get("/:id", this.getDepartmentById);
+    this.router.get("/", authorize, this.getAllDepartment);
+    this.router.get("/:id", authorize, this.getDepartmentById);
 
-    this.router.post("/", this.CreateDepartment);
+    this.router.post("/", authorize, this.CreateDepartment);
 
-    this.router.put("/:id", this.UpdateDepartment);
-    this.router.delete("/:id", this.RemoveDepartment);
+    this.router.put("/:id", authorize, this.UpdateDepartment);
+    this.router.delete("/:id", authorize, this.RemoveDepartment);
   }
-
-  // public async getAllEmployees(req: express.Request, res: express.Response){
-  //     const employees = await this.employeeService.getAllEmployees();
-  //     res.status(200).send(employees);
-  // }
 
   public getAllDepartment = async (
     req: RequestWithUser,
     res: express.Response,
     next: NextFunction
   ) => {
+    const role = req.role;
+    if (role !== Role.HR) {
+      throw new HttpException(
+        403,
+        "You are not authorized to view all departments"
+      );
+    }
+
     const employees = await this.departmentService.getAllDepartment();
     console.log(req.role);
     res.status(200).send(employees);
@@ -69,22 +75,23 @@ class DepartmentController {
     next: express.NextFunction
   ) => {
     try {
-
-      // const role = req.role;
-      // if( role !==Role.HR){ // if()
-      //   throw new HttpException(403, "You are not authorized to create employee");
-      // }
+      const role = req.role;
+      if (role !== Role.HR) {
+        throw new HttpException(
+          403,
+          "You are not authorized to create department"
+        );
+      }
 
       const departmentData = plainToInstance(CreateDepartmentDto, req.body);
       const errors = await validate(departmentData);
-
 
       if (errors.length) {
         console.log(JSON.stringify(errors));
         throw new HttpException(400, JSON.stringify(errors));
       }
 
-        const deptName = req.body.deptName;
+      const deptName = req.body.deptName;
 
       const department = await this.departmentService.CreateDepartment(
         deptName
@@ -96,21 +103,29 @@ class DepartmentController {
     }
   };
   public UpdateDepartment = async (
-    req: express.Request,
+    req: RequestWithUser,
     res: express.Response,
     next: express.NextFunction
   ) => {
     try {
+      const role = req.role;
+      if (role !== Role.HR) {
+        throw new HttpException(
+          403,
+          "You are not authorized to update department"
+        );
+      }
+
       const departmentData = plainToInstance(UpdateDepartmentDto, req.body);
       const errors = await validate(departmentData);
-      
+
       if (errors.length) {
         console.log(JSON.stringify(errors));
         throw new HttpException(400, JSON.stringify(errors));
       }
 
-    const deptName = req.body.deptName;
-    const departmentId = Number(req.params.id);
+      const deptName = req.body.deptName;
+      const departmentId = Number(req.params.id);
 
       const department = await this.departmentService.UpdateDepartment(
         departmentId,
@@ -122,15 +137,25 @@ class DepartmentController {
     }
   };
 
-  public RemoveDepartment= async (
-    req: express.Request,
+  public RemoveDepartment = async (
+    req: RequestWithUser,
     res: express.Response,
     next: express.NextFunction
   ) => {
     try {
+      const role = req.role;
+      if (role !== Role.HR) {
+        throw new HttpException(
+          403,
+          "You are not authorized to remove department"
+        );
+      }
+
       const departmentId = Number(req.params.id);
 
-      const departments= await this.departmentService.getDepartmentById(departmentId);
+      const departments = await this.departmentService.getDepartmentById(
+        departmentId
+      );
 
       if (!departments) {
         const error = new HttpException(
@@ -140,7 +165,15 @@ class DepartmentController {
         throw error;
       }
 
-      const department = await this.departmentService.RemoveDepartment(departmentId);
+      console.log(departments.employee.length + "number of employees present in "+ departments.id);
+
+      if (departments.employee.length != 0) {
+        throw new HttpException(404, "Department Not Empty, Cannot Delete.");
+      }
+
+      const department = await this.departmentService.RemoveDepartment(
+        departmentId
+      );
 
       res.status(204).send();
     } catch (err) {
