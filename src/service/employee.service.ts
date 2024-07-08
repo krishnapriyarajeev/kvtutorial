@@ -7,6 +7,7 @@ import { Role } from "../utils/role.enum";
 import bcrypt from "bcrypt";
 import jsonwebtoken from "jsonwebtoken";
 import {jwtPayload} from "../utils/jwtPayload";
+import Department from "../entity/department.entity";
 
 class EmployeeService{
     // private employeeRepository: EmployeeRepository;
@@ -45,13 +46,17 @@ class EmployeeService{
         return this.employeeRepository.findOneBy({id});
     }
 
-    async CreateEmployee(email: string, name: string, age: number, address: any, password: string, role: Role){
+    async CreateEmployee(email: string, name: string, age: number, address: any, password: string, role: Role, deptId: number){
         const newEmployee = new Employee();
         newEmployee.email = email;
         newEmployee.name = name;
         newEmployee.age=age;
         newEmployee.password = password ? await bcrypt.hash(password, 10): "";
         newEmployee.role = role;
+
+        // const department = new Department()
+        // department.id = ""
+        newEmployee.department_id = deptId;
         
         const newAddress = new Address();
         newAddress.line1 = address.line1;
@@ -62,13 +67,15 @@ class EmployeeService{
         return this.employeeRepository.save(newEmployee);
     }
 
-    async UpdateEmployee(id: number, name:string, email: string, age: number, address: any, password: string, role: Role){
+    async UpdateEmployee(id: number, name:string, email: string, age: number, address: any, password: string, role: Role, deptId: number){
         const employee = await this.employeeRepository.findOneBy({id});
+
         employee.name = name;
         employee.email = email;
         employee.age=age;
         employee.password=password;
         employee.role=role;
+        employee.department_id=deptId;
         
         const newAddress = new Address();
         newAddress.line1 = address.line1;

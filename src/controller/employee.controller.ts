@@ -3,7 +3,7 @@ import HttpException from "../exceptions/http.exceptions";
 import EmployeeService from "../service/employee.service";
 import express, { NextFunction } from "express";
 import { validate } from "class-validator";
-import { CreateEmployee } from "../dto/employee.dto";
+import { CreateEmployeeDto, UpdateEmployeeDto } from "../dto/employee.dto";
 import { CreateAddress } from "../dto/address.dto";
 import authorize from "../middleware/authorize.middleware";
 import { RequestWithUser } from "../utils/requestWithUser";
@@ -18,13 +18,13 @@ class EmployeeController {
 
     this.router.post("/login", this.loginEmployee);
 
-    this.router.get("/", authorize, this.getAllEmployees);
-    this.router.get("/:id", authorize, this.getEmployeesById);
+    this.router.get("/", this.getAllEmployees);
+    this.router.get("/:id", this.getEmployeesById);
 
-    this.router.post("/", authorize, this.CreateEmployee);
+    this.router.post("/", this.CreateEmployee);
 
-    this.router.put("/:id", authorize, this.UpdateEmployee);
-    this.router.delete("/:id", authorize, this.RemoveEmployee);
+    this.router.put("/:id", this.UpdateEmployee);
+    this.router.delete("/:id", this.RemoveEmployee);
   }
 
   // public async getAllEmployees(req: express.Request, res: express.Response){
@@ -91,7 +91,7 @@ class EmployeeController {
       //   throw new HttpException(403, "You are not authorized to create employee");
       // }
 
-      const employeeData = plainToInstance(CreateEmployee, req.body);
+      const employeeData = plainToInstance(CreateEmployeeDto, req.body);
       const errors = await validate(employeeData);
 
 
@@ -106,7 +106,8 @@ class EmployeeController {
         employeeData.age,
         employeeData.address,
         employeeData.password,
-        employeeData.role
+        employeeData.role,
+        employeeData.department_id
       );
 
       res.status(201).send(employee);
@@ -120,13 +121,9 @@ class EmployeeController {
     next: express.NextFunction
   ) => {
     try {
-      const employeeData = plainToInstance(CreateEmployee, req.body);
+      const employeeData = plainToInstance(UpdateEmployeeDto, req.body);
       const errors = await validate(employeeData);
       const employeeId = Number(req.params.id);
-      // const name = req.body.name;
-      // const email = req.body.email;
-      // const age = req.body.age;
-      // const address = req.body.address;
 
       if (errors.length) {
         console.log(JSON.stringify(errors));
@@ -139,7 +136,8 @@ class EmployeeController {
         employeeData.age,
         employeeData.address,
         employeeData.password,
-        employeeData.role
+        employeeData.role,
+        employeeData.department_id
       );
       res.status(200).send(employee);
     } catch (err) {

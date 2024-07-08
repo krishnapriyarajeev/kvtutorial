@@ -3,13 +3,12 @@ import AbstractEntity from "./abstract.entity";
 import Employee from "./employee.entity";
 
 @Entity()
-class Department extends AbstractEntity{
-    @Column()
-    deptName: string;
+class Department extends AbstractEntity {
+  @Column()
+  deptName: string;
 
-    @OneToMany(()=> Employee, (employee)=>employee.department)
-    employee: Employee[];
-
+  @OneToMany(() => Employee, (employee) => employee.department)
+  employee: Employee[];
 }
 
 export default Department;
