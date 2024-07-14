@@ -3,7 +3,7 @@ import { forwardRef } from "react";
 const TextField = forwardRef((props, ref) => {
   const onChange = (e) => {
     if (props.onChange) {
-      props.onChange(e.target.value);
+      props.onChange(e.target.value, props.field);
       // console.log(e);
     }
   };
@@ -19,7 +19,7 @@ const TextField = forwardRef((props, ref) => {
         type={props.type}
         placeholder={props.placeholder}
         id="emp"
-        value={props.userName}
+        value={props.value}
         onChange={onChange}
         ref={ref}
       />

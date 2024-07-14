@@ -1,8 +1,7 @@
 // * {
 // //     box-sizing: border-box;
 // //   }
- 
-  
+
 body {
   margin-top: -5px;
   margin-left: -5px;
@@ -15,11 +14,10 @@ body {
       position: fixed;
       margin-left: 20px;
       margin-top: 20px;
-
     }
   }
 
-  .parent-sidenav-outlet{
+  .parent-sidenav-outlet {
     display: flex;
     flex-direction: row;
 
@@ -33,7 +31,6 @@ body {
       vertical-align: middle;
       /* border: solid; */
       box-shadow: 3px 3px #eeeeee;
-
 
       .emplist {
         margin-left: 20px;
@@ -55,35 +52,33 @@ body {
 
         #el {
           margin-left: 15px;
-        } 
+        }
       }
     }
-    
+
     .create-emp-wrapper {
       padding-top: 20px;
       width: calc(100% - 300px);
       height: 100vh;
       margin-top: 0px;
       background-color: #fafafa;
-      
-    
+
       .heading {
         height: 80px;
         background-color: white;
         margin-left: 20px;
         margin-right: 20px;
-      
+
         border-radius: 10px;
         align-items: center;
         display: flex;
         box-shadow: 3px 3px 3px 3px #eeeeee;
         /* border: solid; */
-        h1{
+        h1 {
           margin-left: 40px;
         }
       }
-    
-      
+
       .formflex {
         background-color: white;
         /* margin-left: 20px; */
@@ -95,7 +90,7 @@ body {
         padding-top: 20px;
         padding-bottom: 20px;
         box-shadow: 3px 3px 3px 3px #eeeeee;
-    
+
         .form1 {
           display: flex;
           flex-wrap: wrap;
@@ -120,9 +115,8 @@ body {
               /* color: gray; */
             }
           }
-    
         }
-    
+
         .button1 {
           background-color: #03aeee;
           width: 120px;
@@ -133,7 +127,7 @@ body {
           border: solid 1px;
           border-radius: 5px 5px 5px 5px;
         }
-        
+
         .button2 {
           background-color: white;
           color: #a39f9f;
@@ -147,60 +141,96 @@ body {
         }
       }
     }
-    
-    .emplist-wrapper{
-      padding-top: 20px;
+
+    .emplist-wrapper {
+      // padding-top: 20px;
       width: calc(100% - 300px);
       height: 100vh;
       margin-top: 0px;
       background-color: #fafafa;
-      
-    
+
       .heading {
         height: 80px;
         background-color: white;
         margin-left: 20px;
         margin-right: 20px;
-      
+        margin-top: 20px;
         border-radius: 10px;
         align-items: center;
         display: flex;
+        flex-direction: row;
         box-shadow: 3px 3px 3px 3px #eeeeee;
-        /* border: solid; */
-        h1{
-          margin-left: 40px;
+        .emplist{
+          margin-left: 30px;
+        }
+        .child {
+          flex-basis: 100%;
+          display: flex;
+          flex-direction: row;
+        }
+
+        .child *{
+          flex-basis: 100%;
+          // margin:0;
+          // padding: 0;
+        }
+        
+      }
+
+      .blue-heading {
+        height: 50px;
+        background-color: #eaf9ff;
+        margin-left: 20px;
+        margin-right: 20px;
+        margin-top: 20px;
+        padding-left: 30px;
+        border-radius: 10px;
+        align-items: center;
+        display: flex;
+        // box-shadow: 3px 3px 3px 3px #eeeeee;
+        display: flex;
+        flex-direction: row;
+        // justify-content: space-between;
+
+        .emp {
+          flex-basis: 100%;
+        }
+        Link {
+          .emp {
+            flex-basis: 100%;
+          }
+        }
+      }
+
+      .data-div {
+        height: 50px;
+        background-color: white;
+        margin-left: 20px;
+        margin-right: 20px;
+        margin-top: 10px;
+        border-radius: 10px;
+        align-items: center;
+        display: flex;
+        padding-left: 30px;
+        box-shadow: 3px 3px 3px 3px #eeeeee;
+        flex-direction: row;
+
+        .emp {
+          flex-basis: 100%;
         }
       }
     }
   }
-
 }
 
 
-
-
-
-
-
-
-
-
-  
-
-
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
- 
-  
-  
- 
-
+.child{
+  display: flex;
+  // justify-content: space-between;
+  .left{
+    display: flex;
+    justify-content: right;
+    align-items: center;
+    // width: 50px
+  }
+}

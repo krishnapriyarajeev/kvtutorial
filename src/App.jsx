@@ -7,6 +7,7 @@ import NotFound from "./components/NotFound";
 import HomeLayout from "./layout/HomeLayout";
 import Home from "./pages/Home";
 import EmpList from "./pages/EmpList";
+import EditEmployee from "./pages/EditPage";
 
 
 const App = () => {
@@ -23,7 +24,8 @@ const App = () => {
       children: [
         { index: true, element: <Home /> },
         { path: "createemployees", element: <CreateEmployee /> },
-        { path: "employeelist", element: < EmpList/>}
+        { path: "employeelist", element: < EmpList/>},
+        { path: "editemployee/:id", element: < EditEmployee/>}
       ],
     },
   ]);

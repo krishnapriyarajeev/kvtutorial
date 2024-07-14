@@ -14,13 +14,12 @@ const Login = () => {
     localStorage.setItem("Token", true);
     const uname = "admin";
     const pword = "12345678";
-    // console.log(uname);
-    // console.log(pword);
-    console.log(valu);
-    console.log({ valu, valp, uname, pword, userName, password});
+    console.log(userName);
+    console.log(password);
+    // console.log(valu);
+    // console.log({ valu, valp, uname, pword, userName, password });
 
-    if (uname === userName && pword === password)
-      navigate("/employees");
+    if (uname === userName && pword === password) navigate("/employees");
   };
 
   const [userName, setUserName] = useState("");

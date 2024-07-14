@@ -16,9 +16,9 @@ const HomeLayout = () => {
   return (
     <Fragment>
       <header>
-        <img class="logo" src={Logo} alt="Keyvalue Logo" />
+        <img className="logo" src={Logo} alt="Keyvalue Logo" />
       </header>
-      <div class="parent-sidenav-outlet">
+      <div className="parent-sidenav-outlet">
         <SideNav />
         <Outlet />
       </div>
