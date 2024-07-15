@@ -1,8 +1,7 @@
 import { Link } from "react-router-dom";
 import EmployeeDetails from "../components/EmployeeDetails";
-import obj from "../assets/EmpData";
 
-const EmpList = () => {
+const EmpList = (props) => {
 
   return (
     <div className="emplist-wrapper">
@@ -14,15 +13,15 @@ const EmpList = () => {
             <div className="left">
                 Filter By
             </div>
-            <select>
+            <select className="status">
                 <option value="" disabled selected>Status</option>
                 <option value="active">Active</option>
                 <option value="inactive">Inactive</option>
             </select>
         </div>
-            <div className="child">
-                <a href="createemployees" className="left">+</a>
-                <div>Create Employee</div>
+            <div className="child" id="blue">
+                <a href="createemployees" className="left" id="plus">+</a>
+                <div className="right">Create Employee</div>
             </div>
         
       </section>
@@ -37,8 +36,8 @@ const EmpList = () => {
             <div className="emp">Experience</div>
             <div className="emp">Action</div>
       </div >
-      {obj.map((item)=>{
-              return <EmployeeDetails key={item.employeeid} content={item}/>
+      {props.state.employees.map((item)=>{
+              return <EmployeeDetails key={item.employeeid} content={item} dispatch={props.dispatch}/>
             })
       }
     </div>

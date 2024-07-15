@@ -6,6 +6,7 @@ const obj=[
       department: "Software",
       role: "Software Developer",
       status: "Active",
+      address: "Chengannur",
       experience:"1 year"
     },
     {
@@ -15,6 +16,7 @@ const obj=[
       department: "Software",
       role: "Tester",
       status: "Probation",
+      address: "Panampilly",
       experience:"1 year"
     },
     {
@@ -24,6 +26,7 @@ const obj=[
       department: "Management",
       role: "HR",
       status: "Inactive",
+      address: "Aluva",
       experience:"1 year"
     }
   ]

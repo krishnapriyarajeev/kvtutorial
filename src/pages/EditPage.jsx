@@ -15,7 +15,7 @@ const EditEmployee = () => {
         <h1>Edit Employee</h1>
       </section>
 
-      <Form id={id}/>
+      <Form id={id} dis={true} vis={true}/>
       
     </div>
   );

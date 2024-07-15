@@ -11,7 +11,7 @@ const CreateEmployee = () => {
         <h1>Create Employee</h1>
       </section>
 
-      <Form/>
+      <Form def={true} vis={false}/>
       
     </div>
   );

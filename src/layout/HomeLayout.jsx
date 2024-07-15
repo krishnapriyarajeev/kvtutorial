@@ -13,6 +13,9 @@ const HomeLayout = () => {
   //   navigate("/");
   // }
 
+  // const [state, dispatch] = useReducer(reducer, { employees: obj });
+
+
   return (
     <Fragment>
       <header>

@@ -22,6 +22,7 @@ const TextField = forwardRef((props, ref) => {
         value={props.value}
         onChange={onChange}
         ref={ref}
+        disabled={props.disabled}
       />
       {/* <div>
         {props.error}

@@ -76,19 +76,23 @@ const Form = (props) =>{
           id: 1,
           label: "Employee name",
           placeholder: "Employee name",
-          field: "employeename"
+          field: "employeename",
+          isVisible: true
         },
         {
           id: 2,
           label: "Joining date",
           placeholder: "Joining date",
-          field: "joiningdate"
+          field: "joiningdate",
+          isVisible: true
+
         },
         {
           id: 3,
           label: "Experience",
           placeholder: "Experience",
-          field: "experience"
+          field: "experience",
+          isVisible: true
         },
         {
           id: 4,
@@ -119,15 +123,21 @@ const Form = (props) =>{
           id: 7,
           label: "Address",
           placeholder: "Address",
-          field: "address"
+          field: "address",
+          isVisible: true
         },
         {
             id: 8,
             label: "Employee ID",
             placeholder: "Employee ID",
-            field: "employeeid"
+            field: "employeeid",
+            isDisabled: props.dis,
+            isVisible: props.vis
+
         },
       ];
+
+      console.log("hi"+props.vis);
    
 
     const [employeeState, setEmployeeState] = useState({
@@ -163,9 +173,9 @@ const Form = (props) =>{
             {field.map((item) => {
                 return item.Component ? (
                 <item.Component key={item.id} label={item.label} op={item.op} onChange={OnChange} value={employeeState[item.field]} field={item.field}/>
-                ) : (
-                <TextField key={item.id} label={item.label} value={employeeState[item.field]} field={item.field} placeholder={item.placeholder} onChange={OnChange}/>
-                );
+                ) : item.isVisible ? (
+                <TextField key={item.id} label={item.label} value={employeeState[item.field]} field={item.field} placeholder={item.placeholder} onChange={OnChange} disabled={item.isDisabled}/>
+                ) : <div></div>
             })}
             </form>
             <Button className="button1" text="Create" />
